@@ -49,14 +49,10 @@ public class Movement : MonoBehaviour
     {
        
     }
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        Debug.Log("Collision detected with: " + collision.gameObject.name);
-    }
+   
     void CreateNext()
     {
         Instantiate(GameManager.instance.massive[Random.Range(0, 2)], transform.position, Quaternion.identity);
-        //Debug.Log(GameManager.instance.massive[1]);
     }
     static void CreateById()
     {

@@ -30,6 +30,5 @@ public class ButtonChangeImage : MonoBehaviour
             button.image.sprite = secondButtonSprite;
             mute=true;
         }
-        //Debug.Log("Asdsadasd");
     }
 }

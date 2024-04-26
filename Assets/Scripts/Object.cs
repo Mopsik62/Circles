@@ -9,6 +9,7 @@ public class Object : MonoBehaviour
     private bool Using = true;
     public bool CanMerge = true;
     public bool HasEntered = false;
+    private float timer = 0f;
     void Start()
     {
       if (transform.position.y < 2.4f)
@@ -25,37 +26,59 @@ public class Object : MonoBehaviour
         if (Using)
         {
             GetComponent<Transform>().position = Movement.CloudPos;
+
+            if (Input.GetKeyDown("space"))
+            {
+                GetComponent<Rigidbody2D>().gravityScale = 1.5f;
+                Using = false;
+            }
+
         }
-        if (Input.GetKeyDown("space") && Using)
-        {
-            GetComponent<Rigidbody2D>().gravityScale = 1.5f;
-            Using = false;
-           // Movement.Spawned = false;
-           // Movement.CD = Time.time;
-        }
+
+       
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-
         if ((collision.gameObject.tag != "Cloud")&&(HasEntered == false))
         {
-            Debug.Log(collision.gameObject.tag);
             HasEntered = true;
-            Movement.Spawned = false; }
+            Movement.Spawned = false; 
+        }
 
         if (collision.gameObject.tag == gameObject.tag )
         {
-            //Debug.Log(collision.GetContact(0).point);
             if ((collision.gameObject.GetComponent<Object>().id == id) && (collision.gameObject.GetComponent<Object>().CanMerge) && (CanMerge))
             {
                 CanMerge = false;
                 collision.gameObject.GetComponent<Object>().CanMerge = false;
-
                 GameManager.instance.replaceObjects(collision.gameObject, gameObject, ((transform.position + collision.transform.position) / 2f ));
-
             }
 
         }
+
     }
+     //Тригеры для гейм овера
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Game Over")
+        { 
+           timer += Time.deltaTime;
+            if (timer > GameManager.instance.TimeTillGameOver)
+            {
+                GameManager.instance.GameOver();
+            }
+           // Debug.Log(timer);
+
+        }
+
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Game Over")
+        {
+            timer = 0f;
+        }
+    }
+
 }
