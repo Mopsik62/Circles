@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
     public static GameManager instance;
     public GameObject[] massive;
     public TextMeshProUGUI scoreText;
@@ -15,7 +15,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AudioClip mergeSound;
     [SerializeField] private int highScore = 0;
     [SerializeField] private int scoreInt = 0;
-   // public float growDuration = 20.0f; // Время, за которое объект будет возрастать до нормального размера
+
+    [SerializeField] private Image gameOverPanel;
+    [SerializeField] private float fadeTime = 1.5f;
 
 
 
@@ -31,7 +33,6 @@ public class GameManager : MonoBehaviour
 
     }
 
-    // Update is called once per frame
     void Update()
     {
 
@@ -47,7 +48,6 @@ public class GameManager : MonoBehaviour
         Score(++first.GetComponent<Object>().id);
         
     }
-
 
     public void Score(int score)
     {
@@ -82,12 +82,24 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ResetGame()
     {
-        //какое нибудь gameOverPanel.gameobject.SetActive(True);
-        yield return new WaitForSeconds(2.5f);
+        Color startColor = gameOverPanel.color;
+        startColor.a = 0f;
+        float elapsedTime = 0f;
+        gameOverPanel.gameObject.SetActive(true);
+        
+        while (elapsedTime < fadeTime)
+        {
+            elapsedTime += Time.deltaTime;
+
+            float newAlpha = Mathf.Lerp(0f, 1f, (elapsedTime / fadeTime));
+            startColor.a = newAlpha;
+            gameOverPanel.color = startColor;
+
+            yield return null;
+        }
+        //yield return new WaitForSeconds(2.5f);
         //
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-
-
     }
 
 }

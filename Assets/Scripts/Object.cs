@@ -64,10 +64,14 @@ public class Object : MonoBehaviour
         if (collision.gameObject.tag == "Game Over")
         { 
            timer += Time.deltaTime;
+            //gameObject.GetComponent<Rigidbody2D>().WakeUp();
+
             if (timer > GameManager.instance.TimeTillGameOver)
             {
                 GameManager.instance.GameOver();
+
             }
+
            // Debug.Log(timer);
 
         }
