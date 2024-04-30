@@ -68,6 +68,16 @@ public class GameManager : MonoBehaviour
 
 
     }
+    //Pause
+    public void Pause()
+    {
+        Time.timeScale = 0;
+    }
+
+    public void Resume()
+    {
+        Time.timeScale = 1;
+    }
     //Save
 
     public void SaveHighScore(int highScore)

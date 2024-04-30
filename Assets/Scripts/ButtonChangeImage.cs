@@ -9,7 +9,7 @@ public class ButtonChangeImage : MonoBehaviour
     public Sprite firstButtonSprite;
     public Sprite secondButtonSprite;
     public Button button;
-    [SerializeField] private bool mute = false;
+    [SerializeField] private bool pressed = false;
 
 
     void Start()
@@ -21,14 +21,14 @@ public class ButtonChangeImage : MonoBehaviour
     }
     public void ChangeButtonImage()
     {
-        if (mute)
+        if (pressed)
         {
             button.image.sprite = firstButtonSprite;
-            mute = false;
+            pressed = false;
         } else
         {
             button.image.sprite = secondButtonSprite;
-            mute=true;
+            pressed = true;
         }
     }
 }
