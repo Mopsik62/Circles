@@ -6,13 +6,19 @@ public class AudioManager : MonoBehaviour
 {
 
     public static AudioManager instance;
-    private AudioSource audioSource;
+
+    [SerializeField] AudioSource SFXSource;
+    [SerializeField] AudioSource musicSource;
+
+    public AudioClip mergeSound;
+    public AudioClip musicSound;
 
     // Start is called before the first frame update
     void Start()
     {
         instance = this;
-        audioSource = GetComponent<AudioSource>();  
+        musicSource.clip = musicSound;
+        musicSource.Play();
     }
 
     // Update is called once per frame
@@ -22,14 +28,14 @@ public class AudioManager : MonoBehaviour
     }
     public void playSound(AudioClip audioClip)
     {
-        audioSource.clip = audioClip;
-        audioSource.Play();
+        SFXSource.clip = audioClip;
+        SFXSource.Play();
     }
 
-    public void setMute()
+    /*public void setMute()
     {
-        if (audioSource.volume == 0f)
-        { audioSource.volume = 1f; }
-        else { audioSource.volume = 0; }
-    }
+        if (SFXSource.volume == 0f)
+        { SFXSource.volume = 1f; }
+        else { SFXSource.volume = 0; }
+    }*/
 }

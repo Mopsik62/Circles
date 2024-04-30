@@ -12,11 +12,14 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI highScoreText;
     public float TimeTillGameOver = 2.0f;
-    [SerializeField] private AudioClip mergeSound;
+
+
     [SerializeField] private int highScore = 0;
     [SerializeField] private int scoreInt = 0;
 
     [SerializeField] private Image gameOverPanel;
+    [SerializeField] private Image pauseMenu;
+
     [SerializeField] private float fadeTime = 1.5f;
 
 
@@ -39,7 +42,7 @@ public class GameManager : MonoBehaviour
     }
     public void replaceObjects(GameObject first, GameObject second, Vector2 spawnpoint)
     {
-        AudioManager.instance.playSound(mergeSound);
+        AudioManager.instance.playSound(AudioManager.instance.mergeSound);
         Destroy(first);
         Destroy(second);
         Instantiate(massive[first.GetComponent<Object>().id + 1], spawnpoint, Quaternion.identity);
@@ -71,11 +74,13 @@ public class GameManager : MonoBehaviour
     //Pause
     public void Pause()
     {
+        pauseMenu.gameObject.SetActive(true);
         Time.timeScale = 0;
     }
 
     public void Resume()
     {
+        pauseMenu.gameObject.SetActive(false);
         Time.timeScale = 1;
     }
     //Save
