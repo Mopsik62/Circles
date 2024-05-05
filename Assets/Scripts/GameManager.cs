@@ -26,6 +26,9 @@ public class GameManager : MonoBehaviour
     private Color[] initialProgressColors;
     [SerializeField] private int progress = 1;
 
+    [SerializeField] private ParticleSystem particles;
+
+
 
 
 
@@ -71,11 +74,18 @@ public class GameManager : MonoBehaviour
         }
 
     }
+
     public void replaceObjects(GameObject first, GameObject second, Vector2 spawnpoint)
     {
         AudioManager.instance.playSound(AudioManager.instance.mergeSound);
         Destroy(first);
         Destroy(second);
+
+        ParticleSystem newParticles = Instantiate(particles, spawnpoint, Quaternion.identity);
+        newParticles.startColor = initialProgressColors[first.GetComponent<Object>().id + 1];
+
+        newParticles.Play();
+
         Instantiate(massive[first.GetComponent<Object>().id + 1], spawnpoint, Quaternion.identity);
 
         //прогресс
@@ -89,7 +99,8 @@ public class GameManager : MonoBehaviour
         //рассчёт очков
         Score(++first.GetComponent<Object>().id);
 
-        
+        Destroy(newParticles.gameObject, 2.5f);
+
     }
 
     public void Score(int score)
