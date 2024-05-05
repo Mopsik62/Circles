@@ -48,7 +48,7 @@ public class Movement : MonoBehaviour
    
     void CreateNext()
     {
-        Instantiate(GameManager.instance.massive[Random.Range(0, 1)], transform.position, Quaternion.identity);
+        Instantiate(GameManager.instance.massive[Random.Range(0, 2)], transform.position, Quaternion.identity);
     }
     static void CreateById()
     {
