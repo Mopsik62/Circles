@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
+        pauseMenu.gameObject.SetActive(false);
         LoadHighScore();
         highScoreText.text = "Highscore: " + highScore.ToString();
         scoreText.text = "Score: " + scoreInt.ToString();
@@ -143,6 +144,11 @@ public class GameManager : MonoBehaviour
         Application.Quit();
     }
 
+    public void Fullscene(bool is_fullscene)
+    {
+        Screen.fullScreen = is_fullscene;
+        Debug.Log("Fullscreen is " + is_fullscene);
+    }
 
     public void LoadHighScore()
     {
