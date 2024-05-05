@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI highScoreText;
     public float TimeTillGameOver = 2.0f;
-
+    public GameObject[] gameProgressBar;
 
     [SerializeField] private int highScore = 0;
     [SerializeField] private int scoreInt = 0;
@@ -22,17 +22,40 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private float fadeTime = 1.5f;
 
+    private Color[] initialProgressColors;
+    [SerializeField] private int progress = 1;
+
+
 
 
     private void Awake()
     {
         instance = this;
+        initialProgressColors = new Color[gameProgressBar.Length];
     }
     void Start()
     {
         LoadHighScore();
         highScoreText.text = "Highscore: " + highScore.ToString();
         scoreText.text = "Score: " + scoreInt.ToString();
+
+
+      
+        for (int i = 0; i < gameProgressBar.Length; i++)
+        {
+            Color currentColor = gameProgressBar[i].GetComponent<SpriteRenderer>().color;
+
+            initialProgressColors[i] = gameProgressBar[i].GetComponent<SpriteRenderer>().color;
+            if (i > progress)
+            {
+                currentColor.r = 0;
+                currentColor.g = 0;
+                currentColor.b = 0;
+                gameProgressBar[i].GetComponent<SpriteRenderer>().color = currentColor;
+            }
+            //Debug.Log(gameProgressBar[i].GetComponent<SpriteRenderer>().color);
+
+        }
 
     }
 
@@ -47,8 +70,17 @@ public class GameManager : MonoBehaviour
         Destroy(second);
         Instantiate(massive[first.GetComponent<Object>().id + 1], spawnpoint, Quaternion.identity);
 
+        //прогресс
+        if (first.GetComponent<Object>().id + 1 > progress)
+        {
+            progress++;
+            SaveProgress(progress);
+            gameProgressBar[progress].GetComponent<SpriteRenderer>().color = initialProgressColors[progress];
+        }
+
         //рассчёт очков
         Score(++first.GetComponent<Object>().id);
+
         
     }
 
@@ -89,10 +121,21 @@ public class GameManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("HighScore", highScore);
     }
-    
+
+    public void SaveProgress(int progress)
+    {
+        PlayerPrefs.SetInt("Progress", progress);
+
+    }
+
+
     public void LoadHighScore()
     {
         highScore = PlayerPrefs.GetInt("HighScore");
+        if (PlayerPrefs.HasKey("Progress"))
+        {
+            progress = PlayerPrefs.GetInt("Progress");
+        }
     }
 
     IEnumerator ResetGame()

@@ -21,6 +21,7 @@ public class ButtonChangeImage : MonoBehaviour
     }
     public void ChangeButtonImage()
     {
+        Debug.Log("dsads");
         if (pressed)
         {
             button.image.sprite = firstButtonSprite;
