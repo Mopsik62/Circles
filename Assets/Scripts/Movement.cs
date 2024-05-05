@@ -30,16 +30,12 @@ public class Movement : MonoBehaviour
             GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
 
         }
-
+        
         CloudPos = transform.position;
         if (!Spawned)
         {
-            // if (Time.time - CD > 1.0f)
-            // {
-            // CD = Time.time;
             CreateNext();
             Spawned = true;
-            //  }
 
         }
 

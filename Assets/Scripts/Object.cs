@@ -12,9 +12,10 @@ public class Object : MonoBehaviour
     private float timer = 0f;
     void Start()
     {
-      if (transform.position.y < 2.4f)
+      if (transform.position.y < Movement.CloudPos.y)
         {
             Using = false;
+            //Debug.Log("Enterred");
             HasEntered = true;
             GetComponent<Rigidbody2D>().gravityScale = 1f; //можно сделать ригид боди в определении переменных чтобы 2 раза не нагружать рам
         }
@@ -40,14 +41,21 @@ public class Object : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        if ((collision.gameObject.tag == "Cloud"))
+            {
+            //Debug.Log("cloud");
+        }
         if ((collision.gameObject.tag != "Cloud")&&(HasEntered == false))
         {
+            //Debug.Log("dsadasd");
             HasEntered = true;
             Movement.Spawned = false; 
         }
 
         if (collision.gameObject.tag == gameObject.tag )
         {
+            //Debug.Log("dsadasd");
+
             if ((collision.gameObject.GetComponent<Object>().id == id) && (collision.gameObject.GetComponent<Object>().CanMerge) && (CanMerge))
             {
                 CanMerge = false;

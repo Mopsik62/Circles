@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI highScoreText;
     public float TimeTillGameOver = 2.0f;
     public GameObject[] gameProgressBar;
+    [SerializeField] private bool isPaused = false;
 
     [SerializeField] private int highScore = 0;
     [SerializeField] private int scoreInt = 0;
@@ -61,6 +62,12 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (isPaused)
+            { Resume(); }
+            else { Pause(); } 
+        }
 
     }
     public void replaceObjects(GameObject first, GameObject second, Vector2 spawnpoint)
@@ -107,12 +114,14 @@ public class GameManager : MonoBehaviour
     public void Pause()
     {
         pauseMenu.gameObject.SetActive(true);
+        isPaused = true;
         Time.timeScale = 0;
     }
 
     public void Resume()
     {
         pauseMenu.gameObject.SetActive(false);
+        isPaused = false;
         Time.timeScale = 1;
     }
     //Save
@@ -126,6 +135,12 @@ public class GameManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("Progress", progress);
 
+    }
+
+    public void QuitGame()
+    {
+       // Debug.Log("Quiting");
+        Application.Quit();
     }
 
 
