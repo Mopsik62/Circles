@@ -138,6 +138,15 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void ResetProgress()
+    {
+        //PlayerPrefs.DeleteAll();
+        PlayerPrefs.DeleteKey("HighScore");
+        PlayerPrefs.DeleteKey("Progress");
+        Resume();
+        StartCoroutine(ResetGame());
+    }
+
     public void QuitGame()
     {
        // Debug.Log("Quiting");
