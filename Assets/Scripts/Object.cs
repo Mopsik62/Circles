@@ -42,27 +42,32 @@ public class Object : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if ((collision.gameObject.tag == "Cloud"))
-            {
-            //Debug.Log("cloud");
-        }
+        
         if ((collision.gameObject.tag != "Cloud")&&(HasEntered == false))
         {
-            //Debug.Log("dsadasd");
             HasEntered = true;
             Movement.Spawned = false; 
         }
 
         if (collision.gameObject.tag == gameObject.tag )
         {
-            //Debug.Log("dsadasd");
 
             if ((collision.gameObject.GetComponent<Object>().id == id) && (collision.gameObject.GetComponent<Object>().CanMerge) && (CanMerge))
             {
                 CanMerge = false;
                 collision.gameObject.GetComponent<Object>().CanMerge = false;
-                GameManager.instance.replaceObjects(collision.gameObject, gameObject, collision.transform.position);
-                // GameManager.instance.replaceObjects(collision.gameObject, gameObject, ((transform.position + collision.transform.position) / 2f ));
+                Vector3 spawnPosition = (transform.position + collision.transform.position) / 2f;
+
+                if (spawnPosition.y > 0)
+                {
+                    spawnPosition.y = spawnPosition.y * 0.95f;
+                }
+                else
+                {
+                    spawnPosition.y = spawnPosition.y * 1.05f;
+                }
+                //GameManager.instance.replaceObjects(collision.gameObject, gameObject, collision.transform.position);
+                GameManager.instance.replaceObjects(collision.gameObject, gameObject, spawnPosition);
             }
 
         }

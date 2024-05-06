@@ -80,26 +80,30 @@ public class GameManager : MonoBehaviour
         AudioManager.instance.playSound(AudioManager.instance.mergeSound);
         Destroy(first);
         Destroy(second);
-
-        ParticleSystem newParticles = Instantiate(particles, spawnpoint, Quaternion.identity);
-        newParticles.startColor = initialProgressColors[first.GetComponent<Object>().id + 1];
-
-        newParticles.Play();
-
-        Instantiate(massive[first.GetComponent<Object>().id + 1], spawnpoint, Quaternion.identity);
-
-        //прогресс
-        if (first.GetComponent<Object>().id + 1 > progress)
+        if (first.GetComponent<Object>().id != 10)
         {
-            progress++;
-            SaveProgress(progress);
-            gameProgressBar[progress].GetComponent<SpriteRenderer>().color = initialProgressColors[progress];
-        }
+            GameObject createdObject = massive[first.GetComponent<Object>().id + 1];
+            // localeScale.x т.к нужен float, а x=y;
+            PlayParticles(spawnpoint, initialProgressColors[first.GetComponent<Object>().id + 1], 20, createdObject.transform.localScale.x);
 
+            Instantiate(createdObject, spawnpoint, Quaternion.identity);
+
+            //прогресс
+            if (createdObject.GetComponent<Object>().id > progress)
+            {
+                progress = createdObject.GetComponent<Object>().id;
+                SaveProgress(progress);
+                gameProgressBar[progress].GetComponent<SpriteRenderer>().color = initialProgressColors[progress];
+                PlayParticles(gameProgressBar[progress].transform.position, initialProgressColors[progress], 100, createdObject.transform.localScale.x);
+            }
+        }
+        else
+        {
+            Debug.Log("YOU WIN");
+        }
         //рассчёт очков
         Score(++first.GetComponent<Object>().id);
 
-        Destroy(newParticles.gameObject, 2.5f);
 
     }
 
@@ -146,6 +150,31 @@ public class GameManager : MonoBehaviour
     public void SaveProgress(int progress)
     {
         PlayerPrefs.SetInt("Progress", progress);
+
+    }
+    public void PlayParticles( Vector2 spawnpoint, Color? color = null, short? count = null, float? size = null)
+    {
+
+        ParticleSystem newParticles = Instantiate(particles, spawnpoint, Quaternion.identity);
+            if (size != null)
+        {
+            newParticles.startSize = (float)size * 0.5f;
+        }
+        if (color != null)
+        {
+            newParticles.startColor = (Color)color;
+        }
+        
+        if (count != null)
+        {
+            newParticles.emission.SetBurst(0, new ParticleSystem.Burst(0.0f, (short)count));
+        }
+
+ 
+
+        newParticles.Play();
+
+        Destroy(newParticles.gameObject, 2.5f);
 
     }
 
