@@ -61,7 +61,8 @@ public class Object : MonoBehaviour
             {
                 CanMerge = false;
                 collision.gameObject.GetComponent<Object>().CanMerge = false;
-                GameManager.instance.replaceObjects(collision.gameObject, gameObject, ((transform.position + collision.transform.position) / 2f ));
+                GameManager.instance.replaceObjects(collision.gameObject, gameObject, collision.transform.position);
+                // GameManager.instance.replaceObjects(collision.gameObject, gameObject, ((transform.position + collision.transform.position) / 2f ));
             }
 
         }
