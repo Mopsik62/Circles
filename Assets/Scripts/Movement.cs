@@ -5,13 +5,16 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
 
-    public float MovementX;
+    public Vector2 spawnPoint;
     static public float CD = 0;
     static public Vector2 CloudPos;
     static public bool Spawned;
+    RaycastHit2D hit;
+    Ray ray;
 
     void Start()
     {
+        spawnPoint = transform.position;
         Spawned = true;
         CreateNext();
 
@@ -19,18 +22,20 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButton("Horizontal"))
+        Vector3 mousePos = Input.mousePosition;
+        mousePos = Camera.main.ScreenToWorldPoint(mousePos);
+
         {
-            MovementX = Input.GetAxisRaw("Horizontal");
-            GetComponent<Rigidbody2D>().velocity = new Vector2(MovementX * 3.5f, 0);
+            Debug.Log("Mouse = " + mousePos.x);
         }
 
-        if (!Input.GetButton("Horizontal"))
+        if (mousePos.x != transform.position.x)
         {
-            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+            Vector2 position = new Vector2(mousePos.x, transform.position.y);
+            GetComponent<Rigidbody2D>().MovePosition(position);
 
         }
-        
+
         CloudPos = transform.position;
         if (!Spawned)
         {
@@ -39,12 +44,35 @@ public class Movement : MonoBehaviour
 
         }
 
+
+
     }
 
-    void FixedUpdate()
+  /*  void FixedUpdate()
     {
-       
-    }
+        Vector3 mousePos = Input.mousePosition;
+        mousePos = Camera.main.ScreenToWorldPoint(mousePos);
+
+        {
+            Debug.Log("Mouse = " + mousePos.x);
+        }
+
+        if (mousePos.x != transform.position.x)
+        { 
+            //не знаю почему координата y вообще меняется при плоском столкновении со стеной. Пока что костыль.
+            Vector2 position = new Vector2(mousePos.x, transform.position.y);
+            GetComponent<Rigidbody2D>().MovePosition(position);
+
+        }
+
+        CloudPos = transform.position;
+        if (!Spawned)
+        {
+            CreateNext();
+            Spawned = true;
+
+        }
+    }*/
    
     void CreateNext()
     {

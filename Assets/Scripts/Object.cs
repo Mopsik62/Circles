@@ -28,7 +28,7 @@ public class Object : MonoBehaviour
         {
             GetComponent<Transform>().position = Movement.CloudPos;
 
-            if (Input.GetKeyDown("space"))
+            if (Input.GetKeyDown("space") || Input.GetMouseButtonDown(0))
             {
                 GetComponent<Rigidbody2D>().gravityScale = 1.5f;
                 Using = false;
@@ -38,6 +38,7 @@ public class Object : MonoBehaviour
 
        
     }
+    
 
     void OnCollisionEnter2D(Collision2D collision)
     {
