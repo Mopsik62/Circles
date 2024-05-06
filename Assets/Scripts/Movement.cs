@@ -17,17 +17,12 @@ public class Movement : MonoBehaviour
         spawnPoint = transform.position;
         Spawned = true;
         CreateNext();
-
     }
 
     private void Update()
     {
         Vector3 mousePos = Input.mousePosition;
         mousePos = Camera.main.ScreenToWorldPoint(mousePos);
-
-        {
-            Debug.Log("Mouse = " + mousePos.x);
-        }
 
         if (mousePos.x != transform.position.x)
         {
@@ -43,8 +38,6 @@ public class Movement : MonoBehaviour
             Spawned = true;
 
         }
-
-
 
     }
 
