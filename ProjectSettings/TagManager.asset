@@ -7,11 +7,12 @@ TagManager:
   - Object
   - Cloud
   - Game Over
+  - BackGround
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Background
   - Water
   - UI
   - 
