@@ -26,12 +26,14 @@ public class Object : MonoBehaviour
     {
         if (Using)
         {
+            CanMerge = false;
             GetComponent<Transform>().position = Movement.CloudPos;
 
             if (Input.GetKeyDown("space") || Input.GetMouseButtonDown(0))
             {
                 GetComponent<Rigidbody2D>().gravityScale = 1.5f;
                 Using = false;
+                CanMerge = true;
             }
 
         }

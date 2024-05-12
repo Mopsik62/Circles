@@ -9,8 +9,7 @@ public class Movement : MonoBehaviour
     static public float CD = 0;
     static public Vector2 CloudPos;
     static public bool Spawned;
-    RaycastHit2D hit;
-    Ray ray;
+
 
     void Start()
     {
