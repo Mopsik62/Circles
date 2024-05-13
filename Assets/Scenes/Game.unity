@@ -4108,7 +4108,7 @@ GameObject:
   - component: {fileID: 1280213690}
   - component: {fileID: 1280213689}
   - component: {fileID: 1280213688}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10425,7 +10425,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 519420031}
-  m_PlaneDistance: 2
+  m_PlaneDistance: 20
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
