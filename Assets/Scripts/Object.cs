@@ -60,14 +60,14 @@ public class Object : MonoBehaviour
                 collision.gameObject.GetComponent<Object>().CanMerge = false;
                 Vector3 spawnPosition = (transform.position + collision.transform.position) / 2f;
 
-                if (spawnPosition.y > 0)
+               /* if (spawnPosition.y > 0)
                 {
                     spawnPosition.y = spawnPosition.y * 0.95f;
                 }
                 else
                 {
                     spawnPosition.y = spawnPosition.y * 1.05f;
-                }
+                }*/
                 //GameManager.instance.replaceObjects(collision.gameObject, gameObject, collision.transform.position);
                 GameManager.instance.replaceObjects(collision.gameObject, gameObject, spawnPosition);
             }
