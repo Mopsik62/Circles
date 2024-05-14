@@ -3,19 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Runtime.InteropServices;
 using TMPro;
 
-public class GameManager : MonoBehaviour
+public class PlayerInfo
 {
+    public int HighScore;
+    public int Progress;
+}
+public class GameManager : MonoBehaviour
+{   
+    public PlayerInfo playerInfo;
+
     public static GameManager instance;
     public GameObject[] massive;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI highScoreText;
     public float TimeTillGameOver = 2.0f;
     public GameObject[] gameProgressBar;
+    public TextMeshProUGUI debug;
     [SerializeField] private bool isPaused = false;
 
-    [SerializeField] private int highScore = 0;
+   // [SerializeField] private int highScore = 0;
     [SerializeField] private int scoreInt = 0;
 
     [SerializeField] private Image gameOverPanel;
@@ -24,43 +33,46 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float fadeTime = 1.5f;
 
     private Color[] initialProgressColors;
-    [SerializeField] private int progress = 1;
+   // [SerializeField] private int progress = 1;
 
     [SerializeField] private ParticleSystem particles;
 
+    [DllImport("__Internal")]
+    private static extern void SaveExtern(string date);
 
+    [DllImport("__Internal")]
+    private static extern void Hello(string value);
 
+    [DllImport("__Internal")]
+    private static extern void LoadExtern();
 
-
+    [DllImport("__Internal")]
+    private static extern void SetToLeadeboard(int value);
     private void Awake()
     {
         instance = this;
+        playerInfo = new PlayerInfo();
         initialProgressColors = new Color[gameProgressBar.Length];
     }
     void Start()
     {
         pauseMenu.gameObject.SetActive(false);
-        LoadHighScore();
-        highScoreText.text = "Highscore: " + highScore.ToString();
-        scoreText.text = "Score: " + scoreInt.ToString();
 
-
-      
-        for (int i = 0; i < gameProgressBar.Length; i++)
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
-            Color currentColor = gameProgressBar[i].GetComponent<SpriteRenderer>().color;
-
-            initialProgressColors[i] = gameProgressBar[i].GetComponent<SpriteRenderer>().color;
-            if (i > progress)
-            {
-                currentColor.r = 0;
-                currentColor.g = 0;
-                currentColor.b = 0;
-                gameProgressBar[i].GetComponent<SpriteRenderer>().color = currentColor;
-            }
-            //Debug.Log(gameProgressBar[i].GetComponent<SpriteRenderer>().color);
+            Debug.Log("Unity WEBGL");
+            debug.text = debug.text + "/Loading from cloud /";
+            Hello("Loading from cloud");
+            LoadExtern();
 
         }
+        else
+        {
+            debug.text = debug.text + "/Loading from PC/";
+            //Hello("Loading from PC");
+            Load();
+        }
+
 
     }
 
@@ -89,12 +101,12 @@ public class GameManager : MonoBehaviour
             Instantiate(createdObject, spawnpoint, Quaternion.identity);
 
             //прогресс
-            if (createdObject.GetComponent<Object>().id > progress)
+            if (createdObject.GetComponent<Object>().id > playerInfo.Progress)
             {
-                progress = createdObject.GetComponent<Object>().id;
-                SaveProgress(progress);
-                gameProgressBar[progress].GetComponent<SpriteRenderer>().color = initialProgressColors[progress];
-                PlayParticles(gameProgressBar[progress].transform.position, initialProgressColors[progress], 100, createdObject.transform.localScale.x);
+                playerInfo.Progress = createdObject.GetComponent<Object>().id;
+                SaveSomething("Progress", playerInfo.Progress);
+                gameProgressBar[playerInfo.Progress].GetComponent<SpriteRenderer>().color = initialProgressColors[playerInfo.Progress];
+                PlayParticles(gameProgressBar[playerInfo.Progress].transform.position, initialProgressColors[playerInfo.Progress], 100, createdObject.transform.localScale.x);
             }
         }
         else
@@ -111,11 +123,12 @@ public class GameManager : MonoBehaviour
     {
         scoreInt += score;
         scoreText.text = "Score: " + scoreInt.ToString();
-        if (scoreInt > highScore)
+        if (scoreInt > playerInfo.HighScore)
         {
-            highScore = scoreInt;
-            highScoreText.text = "Highscore: " + highScore.ToString();
-            SaveHighScore(highScore);
+            playerInfo.HighScore = scoreInt;
+            highScoreText.text = "Highscore: " + playerInfo.HighScore.ToString();
+            SaveSomething("HighScore", playerInfo.HighScore);
+            //SetToLeadeboard(highScore);
         }
     }
 
@@ -141,17 +154,72 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
     }
     //Save
-
-    public void SaveHighScore(int highScore)
+    public void SaveSomething (string key, int value)
     {
-        PlayerPrefs.SetInt("HighScore", highScore);
-    }
-
-    public void SaveProgress(int progress)
-    {
-        PlayerPrefs.SetInt("Progress", progress);
+        PlayerPrefs.SetInt(key, value);
+        playerInfo.HighScore = PlayerPrefs.GetInt("HighScore");
+        playerInfo.Progress = PlayerPrefs.GetInt("Progress");
+        SaveForYandex();
 
     }
+    public void SaveSomething(string key, float value)
+    {
+        PlayerPrefs.SetFloat(key, value);
+    }
+    public void SaveSomething(string key, string value)
+    {
+        PlayerPrefs.SetString(key, value);
+    }
+    public void SaveForYandex()
+    {
+        string jsonString = JsonUtility.ToJson(playerInfo);
+        SaveExtern(jsonString);
+    }
+
+    public void Load()
+    {
+        string s = "/Load() highScore = " + PlayerPrefs.GetInt("HighScore") + ", progress = " + PlayerPrefs.GetInt("Progress") + "/";
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+            Hello(s);
+        debug.text = debug.text + s;
+        playerInfo.HighScore = PlayerPrefs.GetInt("HighScore");
+        playerInfo.Progress = PlayerPrefs.GetInt("Progress");
+        SetData();
+       
+
+    }
+    public void LoadFromYandex(string value)
+    {
+        playerInfo = JsonUtility.FromJson<PlayerInfo>(value);
+        SaveSomething("HighScore", playerInfo.HighScore);
+        SaveSomething("Progress", playerInfo.Progress);
+        debug.text = debug.text + "/LoadFromYandex after saving HighScore = " + playerInfo.HighScore + " and Progress = " + playerInfo.Progress + "/";
+        Load();
+    }
+    public void SetData()
+    {
+        highScoreText.text = "Highscore: " + playerInfo.HighScore.ToString();
+        scoreText.text = "Score: " + scoreInt.ToString();
+        debug.text = debug.text + "/DATA WAS SET/";
+
+
+        for (int i = 0; i < gameProgressBar.Length; i++)
+        {
+            Color currentColor = gameProgressBar[i].GetComponent<SpriteRenderer>().color;
+
+            initialProgressColors[i] = gameProgressBar[i].GetComponent<SpriteRenderer>().color;
+            if (i > playerInfo.Progress)
+            {
+                currentColor.r = 0;
+                currentColor.g = 0;
+                currentColor.b = 0;
+                gameProgressBar[i].GetComponent<SpriteRenderer>().color = currentColor;
+            }
+            //Debug.Log(gameProgressBar[i].GetComponent<SpriteRenderer>().color);
+
+        }
+    }
+
     public void PlayParticles( Vector2 spawnpoint, Color? color = null, short? count = null, float? size = null)
     {
 
@@ -193,20 +261,7 @@ public class GameManager : MonoBehaviour
         Application.Quit();
     }
 
-    public void Fullscene(bool is_fullscene)
-    {
-        Screen.fullScreen = is_fullscene;
-        Debug.Log("Fullscreen is " + is_fullscene);
-    }
-
-    public void LoadHighScore()
-    {
-        highScore = PlayerPrefs.GetInt("HighScore");
-        if (PlayerPrefs.HasKey("Progress"))
-        {
-            progress = PlayerPrefs.GetInt("Progress");
-        }
-    }
+ 
 
     IEnumerator ResetGame()
     {

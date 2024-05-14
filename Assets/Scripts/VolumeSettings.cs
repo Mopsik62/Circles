@@ -28,7 +28,7 @@ public class VolumeSettings : MonoBehaviour
     {
         float volume = musicSlider.value;
         myMixer.SetFloat("music", Mathf.Log10(volume)*20);
-        PlayerPrefs.SetFloat("musicVolume", volume);
+        GameManager.instance.SaveSomething("musicVolume", volume);
     }
 
     // Update is called once per frame
@@ -36,7 +36,7 @@ public class VolumeSettings : MonoBehaviour
     {
         float volume = soundSlider.value;
         myMixer.SetFloat("sound", Mathf.Log10(volume) * 20);
-        PlayerPrefs.SetFloat("soundVolume", volume);
+        GameManager.instance.SaveSomething("soundVolume", volume);
 
     }
 
