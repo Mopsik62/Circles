@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+//using UnityEngine.InputLegacyModule;
+
 
 public class Movement : MonoBehaviour
 {
@@ -9,6 +12,9 @@ public class Movement : MonoBehaviour
     static public float CD = 0;
     static public Vector2 CloudPos;
     static public bool Spawned;
+    GameObject holdedBall;
+    GameObject holdedBall2;
+
 
 
     void Start()
@@ -20,23 +26,89 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
-        Vector3 mousePos = Input.mousePosition;
-        mousePos = Camera.main.ScreenToWorldPoint(mousePos);
+        if (Time.timeScale == 0) return;
+        bool needToDrop = false;
+        Vector3 inputPos = Input.mousePosition;
 
-        if (mousePos.x != transform.position.x)
+        if (Input.touchCount > 0)
         {
-            Vector2 position = new Vector2(mousePos.x, transform.position.y);
-            GetComponent<Rigidbody2D>().MovePosition(position);
+            Debug.Log("Touched");
+            Touch touch = Input.GetTouch(0);
+            inputPos = Camera.main.ScreenToWorldPoint(touch.position);
 
+            if (touch.phase == TouchPhase.Began || touch.phase == TouchPhase.Moved)
+            {
+                Vector2 position = new Vector2(inputPos.x, transform.position.y);
+                GetComponent<Rigidbody2D>().MovePosition(position);
+                CloudPos = transform.position;
+            }
+            else if (touch.phase == TouchPhase.Ended)
+            {
+                needToDrop = true;
+            }
+        }
+        else // Check for mouse/keyboard input
+        {
+            Vector3 mousePos = Input.mousePosition;
+            mousePos = Camera.main.ScreenToWorldPoint(mousePos);
+            inputPos = mousePos;
+
+            if (mousePos.x != transform.position.x)
+            {
+                Vector2 position = new Vector2(inputPos.x, transform.position.y);
+                GetComponent<Rigidbody2D>().MovePosition(position);
+            }
+
+            CloudPos = transform.position;
+
+            if (Input.GetKeyDown("space") || Input.GetMouseButtonDown(0))
+            {
+                needToDrop = true;
+            }
         }
 
         CloudPos = transform.position;
+
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            PointerEventData pointerData = new PointerEventData(EventSystem.current)
+            {
+                pointerId = -1, // Указатель мыши
+            };
+
+            pointerData.position = Input.mousePosition;
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(pointerData, results);
+
+            foreach (RaycastResult result in results)
+            {
+                if (result.gameObject.name == "PauseButton")
+                {
+                    Debug.Log("Pointer over UI element: " + result.gameObject.name);
+                    needToDrop = false;
+                    return; // Пропуск логики ввода, если указатель над UI
+                }
+            }
+        }
+
+
+        if (needToDrop)
+        {
+            holdedBall2.GetComponent<Object>().Drop();
+        }
+
         if (!Spawned)
         {
             CreateNext();
             Spawned = true;
 
         }
+
+        //if (Input.GetKeyDown("space") || Input.GetMouseButtonDown(0))
+       // {
+       //     holdedBall2.GetComponent<Object>().Drop();
+       // }
+
 
     }
 
@@ -68,7 +140,7 @@ public class Movement : MonoBehaviour
    
     void CreateNext()
     {
-        Instantiate(GameManager.instance.massive[Random.Range(0, 2)], transform.position, Quaternion.identity);
+        holdedBall2 = Instantiate(GameManager.instance.massive[Random.Range(0, 2)], transform.position, Quaternion.identity);
     }
     static void CreateById()
     {

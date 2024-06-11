@@ -15,10 +15,11 @@ public class Object : MonoBehaviour
       if (transform.position.y < Movement.CloudPos.y)
         {
             Using = false;
-            //Debug.Log("Enterred");
+            Debug.Log("Enterred");
             HasEntered = true;
             GetComponent<Rigidbody2D>().gravityScale = 1f; //можно сделать ригид боди в определении переменных чтобы 2 раза не нагружать рам
         }
+        Debug.Log("created");
     }
 
     // Update is called once per frame
@@ -26,21 +27,22 @@ public class Object : MonoBehaviour
     {
         if (Using)
         {
+           // Debug.Log(Using);
             CanMerge = false;
             GetComponent<Transform>().position = Movement.CloudPos;
-
-            if (Input.GetKeyDown("space") || Input.GetMouseButtonDown(0))
-            {
-                GetComponent<Rigidbody2D>().gravityScale = 1.5f;
-                Using = false;
-                CanMerge = true;
-            }
+            //Debug.Log("Using");
 
         }
 
        
     }
-    
+    public void Drop()
+    {
+        GetComponent<Rigidbody2D>().gravityScale = 1.5f;
+        Debug.Log("dropeed");
+        Using = false;
+        CanMerge = true;
+    }
 
     void OnCollisionEnter2D(Collision2D collision)
     {

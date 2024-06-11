@@ -44,12 +44,16 @@ public class GameManager : MonoBehaviour
     private static extern void Hello(string value);
 
     [DllImport("__Internal")]
-    private static extern void LoadExtern();
+    private static extern void ShowAdv();
+
+    /*    [DllImport("__Internal")]
+        private static extern void LoadExtern();*/
 
     [DllImport("__Internal")]
-    private static extern void SetToLeadeboard(int value);
+    private static extern void SetToLeaderboard(int value);
     private void Awake()
     {
+        ShowAdv();
         instance = this;
         playerInfo = new PlayerInfo();
         initialProgressColors = new Color[gameProgressBar.Length];
@@ -57,22 +61,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         pauseMenu.gameObject.SetActive(false);
-
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
-        {
-            Debug.Log("Unity WEBGL");
-            debug.text = debug.text + "/Loading from cloud /";
-            Hello("Loading from cloud");
-            LoadExtern();
-
-        }
-        else
-        {
-            debug.text = debug.text + "/Loading from PC/";
-            //Hello("Loading from PC");
-            Load();
-        }
-
+        Load();
+        //        ShowAdv();
 
     }
 
@@ -105,6 +95,8 @@ public class GameManager : MonoBehaviour
             {
                 playerInfo.Progress = createdObject.GetComponent<Object>().id;
                 SaveSomething("Progress", playerInfo.Progress);
+                Debug.Log(playerInfo.Progress);
+                Debug.Log(gameProgressBar[playerInfo.Progress].GetComponent<SpriteRenderer>().color + "  and    " + initialProgressColors[playerInfo.Progress]);
                 gameProgressBar[playerInfo.Progress].GetComponent<SpriteRenderer>().color = initialProgressColors[playerInfo.Progress];
                 PlayParticles(gameProgressBar[playerInfo.Progress].transform.position, initialProgressColors[playerInfo.Progress], 100, createdObject.transform.localScale.x);
             }
@@ -122,13 +114,12 @@ public class GameManager : MonoBehaviour
     public void Score(int score)
     {
         scoreInt += score;
-        scoreText.text = "Score: " + scoreInt.ToString();
-        if (scoreInt > playerInfo.HighScore)
+        scoreText.text = getStringBeforeColon(scoreText.text) + " " + scoreInt.ToString(); if (scoreInt > playerInfo.HighScore)
         {
             playerInfo.HighScore = scoreInt;
-            highScoreText.text = "Highscore: " + playerInfo.HighScore.ToString();
+            highScoreText.text = getStringBeforeColon(highScoreText.text) + " " + playerInfo.HighScore.ToString();
             SaveSomething("HighScore", playerInfo.HighScore);
-            //SetToLeadeboard(highScore);
+            SetToLeaderboard(playerInfo.HighScore);
         }
     }
 
@@ -136,9 +127,8 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Game Over");
         StartCoroutine(ResetGame());
-
-
     }
+
     //Pause
     public void Pause()
     {
@@ -157,9 +147,21 @@ public class GameManager : MonoBehaviour
     public void SaveSomething (string key, int value)
     {
         PlayerPrefs.SetInt(key, value);
-        playerInfo.HighScore = PlayerPrefs.GetInt("HighScore");
-        playerInfo.Progress = PlayerPrefs.GetInt("Progress");
-        SaveForYandex();
+        Debug.Log(key + " " + value);
+        switch (key)
+        {
+            case "HighScore":
+                playerInfo.HighScore = PlayerPrefs.GetInt("HighScore");
+                break;
+            case "Progress":
+                playerInfo.Progress = PlayerPrefs.GetInt("Progress");
+                break;
+            default:
+                Debug.Log("unknown key = " + key);
+                break;
+        }
+
+       // SaveForYandex();
 
     }
     public void SaveSomething(string key, float value)
@@ -170,50 +172,68 @@ public class GameManager : MonoBehaviour
     {
         PlayerPrefs.SetString(key, value);
     }
-    public void SaveForYandex()
+   /* public void SaveForYandex()
     {
         string jsonString = JsonUtility.ToJson(playerInfo);
         SaveExtern(jsonString);
-    }
+    }*/
 
     public void Load()
     {
         string s = "/Load() highScore = " + PlayerPrefs.GetInt("HighScore") + ", progress = " + PlayerPrefs.GetInt("Progress") + "/";
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
-            Hello(s);
         debug.text = debug.text + s;
         playerInfo.HighScore = PlayerPrefs.GetInt("HighScore");
         playerInfo.Progress = PlayerPrefs.GetInt("Progress");
         SetData();
-       
-
+     
     }
-    public void LoadFromYandex(string value)
+    /*public void LoadFromYandex(string value)
     {
         playerInfo = JsonUtility.FromJson<PlayerInfo>(value);
+        debug.text = debug.text + "/LoadFromYandex before saving HighScore = " + playerInfo.HighScore + " and Progress = " + playerInfo.Progress + "/";
+
         SaveSomething("HighScore", playerInfo.HighScore);
+
+        debug.text = debug.text + "/LoadFromYandex after saving HighScore HighScore = " + playerInfo.HighScore + " and Progress = " + playerInfo.Progress + "/";
+
         SaveSomething("Progress", playerInfo.Progress);
+        debug.text = debug.text + Language.instance.currentLanguage + "/";
         debug.text = debug.text + "/LoadFromYandex after saving HighScore = " + playerInfo.HighScore + " and Progress = " + playerInfo.Progress + "/";
         Load();
+    }*/
+    public string getStringBeforeColon(string text)
+    {
+        // Get the index of the colon
+        int colonIndex = text.IndexOf(':');
+
+        // Extract the text before the colon
+        string prefix = text.Substring(0, colonIndex + 1);
+        return prefix;
     }
     public void SetData()
     {
-        highScoreText.text = "Highscore: " + playerInfo.HighScore.ToString();
-        scoreText.text = "Score: " + scoreInt.ToString();
+
+        highScoreText.text = getStringBeforeColon(highScoreText.text) + " " + playerInfo.HighScore.ToString();
+        Debug.Log(highScoreText.text);
+        scoreText.text = getStringBeforeColon(scoreText.text) + " " + scoreInt.ToString();
+       
         debug.text = debug.text + "/DATA WAS SET/";
+        if (playerInfo.Progress < 1)
+        { playerInfo.Progress = 1; }
 
-
-        for (int i = 0; i < gameProgressBar.Length; i++)
+        for (int i = 1; i < gameProgressBar.Length; i++)
         {
             Color currentColor = gameProgressBar[i].GetComponent<SpriteRenderer>().color;
 
             initialProgressColors[i] = gameProgressBar[i].GetComponent<SpriteRenderer>().color;
+            Debug.Log(i + "    " + currentColor);
+
             if (i > playerInfo.Progress)
             {
                 currentColor.r = 0;
                 currentColor.g = 0;
                 currentColor.b = 0;
-                gameProgressBar[i].GetComponent<SpriteRenderer>().color = currentColor;
+               gameProgressBar[i].GetComponent<SpriteRenderer>().color = currentColor;
             }
             //Debug.Log(gameProgressBar[i].GetComponent<SpriteRenderer>().color);
 
