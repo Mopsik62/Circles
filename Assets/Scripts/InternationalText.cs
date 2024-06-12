@@ -12,10 +12,7 @@ public class InternationalText : MonoBehaviour
     {
         Language.OnLanguageChanged += UpdateText;
         // ≈сли €зык уже загружен, обновл€ем текст сразу
-        if (!string.IsNullOrEmpty(Language.instance.currentLanguage))
-        {
-            UpdateText();
-        }
+        UpdateText();
     }
 
     private void OnDisable()
@@ -25,20 +22,40 @@ public class InternationalText : MonoBehaviour
 
     private void UpdateText()
     {
-        string[] parts = GetComponent<TextMeshProUGUI>().text.Split(':');
-        Debug.Log(parts[0] + "   " + parts[1]);
-
-        switch (Language.instance.currentLanguage)
+        if (GetComponent<TextMeshProUGUI>().text.Contains(":")) //for Score and HS
         {
-            case "en":
-                GetComponent<TextMeshProUGUI>().text = _en + ":" + parts[1];
-                break;
-            case "ru":
-                GetComponent<TextMeshProUGUI>().text = _ru + ":" + parts[1];
-                break;
-            default:
-                GetComponent<TextMeshProUGUI>().text = _en + ":" + parts[1];
-                break;
+            string[] parts = GetComponent<TextMeshProUGUI>().text.Split(':');
+
+            switch (Language.instance.currentLanguage)
+            {
+                case "en":
+                    GetComponent<TextMeshProUGUI>().text = _en + parts[1];
+                    Debug.Log(GetComponent<TextMeshProUGUI>().text = _en + parts[1]);
+                    break;
+                case "ru":
+                    GetComponent<TextMeshProUGUI>().text = _ru + parts[1];
+                    Debug.Log(GetComponent<TextMeshProUGUI>().text = _ru + parts[1]);
+                    break;
+                default:
+                    GetComponent<TextMeshProUGUI>().text = _en + parts[1];
+                    break;
+            }
         }
+        else
+        { //for other
+            switch (Language.instance.currentLanguage)
+            {
+                case "en":
+                    GetComponent<TextMeshProUGUI>().text = _en;
+                    break;
+                case "ru":
+                    GetComponent<TextMeshProUGUI>().text = _ru;
+                    break;
+                default:
+                    GetComponent<TextMeshProUGUI>().text = _en;
+                    break;
+            }
+        }
+
     }
 }

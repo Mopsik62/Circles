@@ -61,6 +61,26 @@
         return null;
       }
    },
+   
+    LoadExtern: async function() {
+    try {
+        // Ожидание инициализации игрока
+        await initPlayer();
+
+        if (player) {
+            const _data = await player.getData();
+            const myJSON = JSON.stringify(_data);
+            console.log("myJSON");
+            console.log(myJSON);
+            MyGameInstance.SendMessage('GameManager', 'LoadFromYandex', myJSON);
+            console.log("PlayerData was loaded");
+        } else {
+            console.error('Player not initialized');
+        }
+    } catch (err) {
+        console.error('Error loading player data:', err);
+    }
+    },
 
    ShowAdv : function(){
       ysdk.adv.showFullscreenAdv({

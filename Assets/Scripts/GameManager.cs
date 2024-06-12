@@ -12,7 +12,7 @@ public class PlayerInfo
     public int Progress;
 }
 public class GameManager : MonoBehaviour
-{   
+{
     public PlayerInfo playerInfo;
 
     public static GameManager instance;
@@ -22,9 +22,12 @@ public class GameManager : MonoBehaviour
     public float TimeTillGameOver = 2.0f;
     public GameObject[] gameProgressBar;
     public TextMeshProUGUI debug;
+
+    // public GameObject[] initialGameProgressBar;
+
     [SerializeField] private bool isPaused = false;
 
-   // [SerializeField] private int highScore = 0;
+    // [SerializeField] private int highScore = 0;
     [SerializeField] private int scoreInt = 0;
 
     [SerializeField] private Image gameOverPanel;
@@ -33,7 +36,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float fadeTime = 1.5f;
 
     private Color[] initialProgressColors;
-   // [SerializeField] private int progress = 1;
+    // [SerializeField] private int progress = 1;
 
     [SerializeField] private ParticleSystem particles;
 
@@ -46,22 +49,24 @@ public class GameManager : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void ShowAdv();
 
-    /*    [DllImport("__Internal")]
-        private static extern void LoadExtern();*/
+    [DllImport("__Internal")]
+    private static extern void LoadExtern();
 
     [DllImport("__Internal")]
     private static extern void SetToLeaderboard(int value);
     private void Awake()
     {
-        ShowAdv();
         instance = this;
         playerInfo = new PlayerInfo();
         initialProgressColors = new Color[gameProgressBar.Length];
     }
     void Start()
     {
+        ShowAdv();
+        Debug.Log("Start LoadExtern From Unity");
+        LoadExtern();
         pauseMenu.gameObject.SetActive(false);
-        Load();
+        //Load();
         //        ShowAdv();
 
     }
@@ -72,7 +77,7 @@ public class GameManager : MonoBehaviour
         {
             if (isPaused)
             { Resume(); }
-            else { Pause(); } 
+            else { Pause(); }
         }
 
     }
@@ -144,7 +149,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
     }
     //Save
-    public void SaveSomething (string key, int value)
+    public void SaveSomething(string key, int value)
     {
         PlayerPrefs.SetInt(key, value);
         Debug.Log(key + " " + value);
@@ -161,7 +166,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-       // SaveForYandex();
+        // SaveForYandex();
 
     }
     public void SaveSomething(string key, float value)
@@ -172,35 +177,27 @@ public class GameManager : MonoBehaviour
     {
         PlayerPrefs.SetString(key, value);
     }
-   /* public void SaveForYandex()
-    {
-        string jsonString = JsonUtility.ToJson(playerInfo);
-        SaveExtern(jsonString);
-    }*/
+    /* public void SaveForYandex()
+     {
+         string jsonString = JsonUtility.ToJson(playerInfo);
+         SaveExtern(jsonString);
+     }*/
 
     public void Load()
     {
-        string s = "/Load() highScore = " + PlayerPrefs.GetInt("HighScore") + ", progress = " + PlayerPrefs.GetInt("Progress") + "/";
-        debug.text = debug.text + s;
         playerInfo.HighScore = PlayerPrefs.GetInt("HighScore");
         playerInfo.Progress = PlayerPrefs.GetInt("Progress");
         SetData();
-     
+
     }
-    /*public void LoadFromYandex(string value)
+    public void LoadFromYandex(string value)
     {
+        Debug.Log("LoadFronYandex in Unity");
         playerInfo = JsonUtility.FromJson<PlayerInfo>(value);
-        debug.text = debug.text + "/LoadFromYandex before saving HighScore = " + playerInfo.HighScore + " and Progress = " + playerInfo.Progress + "/";
-
         SaveSomething("HighScore", playerInfo.HighScore);
-
-        debug.text = debug.text + "/LoadFromYandex after saving HighScore HighScore = " + playerInfo.HighScore + " and Progress = " + playerInfo.Progress + "/";
-
         SaveSomething("Progress", playerInfo.Progress);
-        debug.text = debug.text + Language.instance.currentLanguage + "/";
-        debug.text = debug.text + "/LoadFromYandex after saving HighScore = " + playerInfo.HighScore + " and Progress = " + playerInfo.Progress + "/";
         Load();
-    }*/
+    }
     public string getStringBeforeColon(string text)
     {
         // Get the index of the colon
@@ -216,35 +213,35 @@ public class GameManager : MonoBehaviour
         highScoreText.text = getStringBeforeColon(highScoreText.text) + " " + playerInfo.HighScore.ToString();
         Debug.Log(highScoreText.text);
         scoreText.text = getStringBeforeColon(scoreText.text) + " " + scoreInt.ToString();
-       
-        debug.text = debug.text + "/DATA WAS SET/";
+
         if (playerInfo.Progress < 1)
         { playerInfo.Progress = 1; }
 
         for (int i = 1; i < gameProgressBar.Length; i++)
         {
-            Color currentColor = gameProgressBar[i].GetComponent<SpriteRenderer>().color;
 
-            initialProgressColors[i] = gameProgressBar[i].GetComponent<SpriteRenderer>().color;
-            Debug.Log(i + "    " + currentColor);
+            initialProgressColors[i] = massive[i].GetComponent<SpriteRenderer>().color;
+            //Color currentColor = gameProgressBar[i].GetComponent<SpriteRenderer>().color;
 
-            if (i > playerInfo.Progress)
+            //Debug.Log(i + "    " + currentColor);
+
+            if (i <= playerInfo.Progress)
             {
-                currentColor.r = 0;
-                currentColor.g = 0;
-                currentColor.b = 0;
-               gameProgressBar[i].GetComponent<SpriteRenderer>().color = currentColor;
+                //  currentColor.r = 0;
+                //  currentColor.g = 0;
+                //  currentColor.b = 0;
+                gameProgressBar[i].GetComponent<SpriteRenderer>().color = initialProgressColors[i];
             }
             //Debug.Log(gameProgressBar[i].GetComponent<SpriteRenderer>().color);
 
         }
     }
 
-    public void PlayParticles( Vector2 spawnpoint, Color? color = null, short? count = null, float? size = null)
+    public void PlayParticles(Vector2 spawnpoint, Color? color = null, short? count = null, float? size = null)
     {
 
         ParticleSystem newParticles = Instantiate(particles, spawnpoint, Quaternion.identity);
-            if (size != null)
+        if (size != null)
         {
             newParticles.startSize = (float)size * 0.5f;
         }
@@ -252,13 +249,13 @@ public class GameManager : MonoBehaviour
         {
             newParticles.startColor = (Color)color;
         }
-        
+
         if (count != null)
         {
             newParticles.emission.SetBurst(0, new ParticleSystem.Burst(0.0f, (short)count));
         }
 
- 
+
 
         newParticles.Play();
 
@@ -277,11 +274,11 @@ public class GameManager : MonoBehaviour
 
     public void QuitGame()
     {
-       // Debug.Log("Quiting");
+        // Debug.Log("Quiting");
         Application.Quit();
     }
 
- 
+
 
     IEnumerator ResetGame()
     {
@@ -289,7 +286,7 @@ public class GameManager : MonoBehaviour
         startColor.a = 0f;
         float elapsedTime = 0f;
         gameOverPanel.gameObject.SetActive(true);
-        
+
         while (elapsedTime < fadeTime)
         {
             elapsedTime += Time.deltaTime;
