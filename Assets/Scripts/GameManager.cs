@@ -65,6 +65,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Start LoadExtern From Unity");
         LoadExtern();
         pauseMenu.gameObject.SetActive(false);
+
         //Load();
         //        ShowAdv();
 
