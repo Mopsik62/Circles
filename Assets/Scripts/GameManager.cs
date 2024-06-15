@@ -21,7 +21,6 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI highScoreText;
     public float TimeTillGameOver = 2.0f;
     public GameObject[] gameProgressBar;
-    public TextMeshProUGUI debug;
 
     // public GameObject[] initialGameProgressBar;
 

@@ -30,11 +30,9 @@ public class InternationalText : MonoBehaviour
             {
                 case "en":
                     GetComponent<TextMeshProUGUI>().text = _en + parts[1];
-                    Debug.Log(GetComponent<TextMeshProUGUI>().text = _en + parts[1]);
                     break;
                 case "ru":
                     GetComponent<TextMeshProUGUI>().text = _ru + parts[1];
-                    Debug.Log(GetComponent<TextMeshProUGUI>().text = _ru + parts[1]);
                     break;
                 default:
                     GetComponent<TextMeshProUGUI>().text = _en + parts[1];

@@ -27,14 +27,10 @@ public class Object : MonoBehaviour
     {
         if (Using)
         {
-           // Debug.Log(Using);
             CanMerge = false;
             GetComponent<Transform>().position = Movement.CloudPos;
-            //Debug.Log("Using");
-
         }
-
-       
+ 
     }
     public void Drop()
     {

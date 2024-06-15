@@ -13,7 +13,6 @@ public class Movement : MonoBehaviour
     static public Vector2 CloudPos;
     static public bool Spawned;
     GameObject holdedBall;
-    GameObject holdedBall2;
 
 
 
@@ -32,9 +31,31 @@ public class Movement : MonoBehaviour
 
         if (Input.touchCount > 0)
         {
-            Debug.Log("Touched");
             Touch touch = Input.GetTouch(0);
             inputPos = Camera.main.ScreenToWorldPoint(touch.position);
+
+            // Проверка, находится ли указатель касания над элементом UI
+            if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+            {
+                PointerEventData pointerData = new PointerEventData(EventSystem.current)
+                {
+                    pointerId = touch.fingerId,
+                };
+
+                pointerData.position = touch.position;
+                List<RaycastResult> results = new List<RaycastResult>();
+                EventSystem.current.RaycastAll(pointerData, results);
+
+                foreach (RaycastResult result in results)
+                {
+                    if (result.gameObject.name == "PauseButton")
+                    {
+                        //Debug.Log("Pointer over UI element: " + result.gameObject.name);
+                        needToDrop = false;
+                        return; // Пропуск логики ввода, если указатель над UI
+                    }
+                }
+            }
 
             if (touch.phase == TouchPhase.Began || touch.phase == TouchPhase.Moved)
             {
@@ -53,6 +74,29 @@ public class Movement : MonoBehaviour
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
             inputPos = mousePos;
 
+            // Проверка, находится ли указатель мыши над элементом UI
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                PointerEventData pointerData = new PointerEventData(EventSystem.current)
+                {
+                    pointerId = -1, // Указатель мыши
+                };
+
+                pointerData.position = Input.mousePosition;
+                List<RaycastResult> results = new List<RaycastResult>();
+                EventSystem.current.RaycastAll(pointerData, results);
+
+                foreach (RaycastResult result in results)
+                {
+                    if (result.gameObject.name == "PauseButton")
+                    {
+                        // Debug.Log("Pointer over UI element: " + result.gameObject.name);
+                        needToDrop = false;
+                        return; // Пропуск логики ввода, если указатель над UI
+                    }
+                }
+            }
+
             if (mousePos.x != transform.position.x)
             {
                 Vector2 position = new Vector2(inputPos.x, transform.position.y);
@@ -67,80 +111,20 @@ public class Movement : MonoBehaviour
             }
         }
 
-        CloudPos = transform.position;
-
-        if (EventSystem.current.IsPointerOverGameObject())
-        {
-            PointerEventData pointerData = new PointerEventData(EventSystem.current)
-            {
-                pointerId = -1, // Указатель мыши
-            };
-
-            pointerData.position = Input.mousePosition;
-            List<RaycastResult> results = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(pointerData, results);
-
-            foreach (RaycastResult result in results)
-            {
-                if (result.gameObject.name == "PauseButton")
-                {
-                    Debug.Log("Pointer over UI element: " + result.gameObject.name);
-                    needToDrop = false;
-                    return; // Пропуск логики ввода, если указатель над UI
-                }
-            }
-        }
-
-
         if (needToDrop)
         {
-            holdedBall2.GetComponent<Object>().Drop();
+            holdedBall.GetComponent<Object>().Drop();
         }
 
         if (!Spawned)
         {
             CreateNext();
             Spawned = true;
-
         }
-
-        //if (Input.GetKeyDown("space") || Input.GetMouseButtonDown(0))
-       // {
-       //     holdedBall2.GetComponent<Object>().Drop();
-       // }
-
-
     }
-
-  /*  void FixedUpdate()
-    {
-        Vector3 mousePos = Input.mousePosition;
-        mousePos = Camera.main.ScreenToWorldPoint(mousePos);
-
-        {
-            Debug.Log("Mouse = " + mousePos.x);
-        }
-
-        if (mousePos.x != transform.position.x)
-        { 
-            //не знаю почему координата y вообще меняется при плоском столкновении со стеной. Пока что костыль.
-            Vector2 position = new Vector2(mousePos.x, transform.position.y);
-            GetComponent<Rigidbody2D>().MovePosition(position);
-
-        }
-
-        CloudPos = transform.position;
-        if (!Spawned)
-        {
-            CreateNext();
-            Spawned = true;
-
-        }
-    }*/
-   
     void CreateNext()
     {
-        holdedBall2 = Instantiate(GameManager.instance.massive[Random.Range(0, 2)], transform.position, Quaternion.identity);
+        holdedBall = Instantiate(GameManager.instance.massive[Random.Range(0, 2)], transform.position, Quaternion.identity);
     }
     static void CreateById()
     {

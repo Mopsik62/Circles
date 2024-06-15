@@ -7,7 +7,6 @@ using TMPro;
 public class Language : MonoBehaviour
 {
     public static Language instance;
-    public TextMeshProUGUI debug;
 
     public string currentLanguage; // ru, en
 
@@ -33,8 +32,6 @@ public class Language : MonoBehaviour
 
         // Уведомляем всех подписчиков об изменении языка
         OnLanguageChanged?.Invoke();
-
-        debug.text = debug.text + currentLanguage + "/";
     }
 
     private IEnumerator WaitForLanguage()
