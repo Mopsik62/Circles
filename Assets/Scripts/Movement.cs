@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TMPro;
+
 //using UnityEngine.InputLegacyModule;
 
 
@@ -9,6 +11,7 @@ public class Movement : MonoBehaviour
 {
 
     public Vector2 spawnPoint;
+    public TextMeshProUGUI debugText;
     static public float CD = 0;
     static public Vector2 CloudPos;
     static public bool Spawned;
@@ -25,9 +28,21 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
-        if (Time.timeScale == 0) return;
+        if (Time.timeScale == 0) return; //for pc devices to avoid double click;
+        if (GameManager.instance.ignoreOneFrame) //for mobile devices to avoid double tap;
+        {
+            GameManager.instance.ignoreOneFrame = false;
+            return;
+        }
+
         bool needToDrop = false;
         Vector3 inputPos = Input.mousePosition;
+
+        if (!Spawned)
+        {
+            CreateNext();
+            Spawned = true;
+        }
 
         if (Input.touchCount > 0)
         {
@@ -48,10 +63,11 @@ public class Movement : MonoBehaviour
 
                 foreach (RaycastResult result in results)
                 {
-                    if (result.gameObject.name == "PauseButton")
+                    if((result.gameObject.name == "PauseButton") || (result.gameObject.name == "ResumeButtonBackground") || (result.gameObject.name == "ResumeButton"))
                     {
                         //Debug.Log("Pointer over UI element: " + result.gameObject.name);
                         needToDrop = false;
+                        debugText.text = debugText.text + " /touchOverUI/ ";
                         return; // Пропуск логики ввода, если указатель над UI
                     }
                 }
@@ -66,9 +82,11 @@ public class Movement : MonoBehaviour
             else if (touch.phase == TouchPhase.Ended)
             {
                 needToDrop = true;
+                debugText.text = debugText.text + " /" + needToDrop + "/ ";
+
             }
         }
-        else // Check for mouse/keyboard input
+        else // Check for mouse input
         {
             Vector3 mousePos = Input.mousePosition;
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
@@ -111,16 +129,14 @@ public class Movement : MonoBehaviour
             }
         }
 
+        CloudPos = transform.position;
+
         if (needToDrop)
         {
             holdedBall.GetComponent<Object>().Drop();
         }
 
-        if (!Spawned)
-        {
-            CreateNext();
-            Spawned = true;
-        }
+        
     }
     void CreateNext()
     {

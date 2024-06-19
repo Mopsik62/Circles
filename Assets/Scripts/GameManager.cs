@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     // public GameObject[] initialGameProgressBar;
 
     [SerializeField] private bool isPaused = false;
+    public bool ignoreOneFrame = false;
 
     // [SerializeField] private int highScore = 0;
     [SerializeField] private int scoreInt = 0;
@@ -144,6 +145,7 @@ public class GameManager : MonoBehaviour
 
     public void Resume()
     {
+        ignoreOneFrame = true;
         pauseMenu.gameObject.SetActive(false);
         isPaused = false;
         Time.timeScale = 1;
