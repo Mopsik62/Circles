@@ -11,7 +11,6 @@ public class InternationalText : MonoBehaviour
     private void OnEnable()
     {
         Language.OnLanguageChanged += UpdateText;
-        // ≈сли €зык уже загружен, обновл€ем текст сразу
         UpdateText();
     }
 

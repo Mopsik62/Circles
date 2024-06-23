@@ -11,7 +11,6 @@ public class Movement : MonoBehaviour
 {
 
     public Vector2 spawnPoint;
-    public TextMeshProUGUI debugText;
     static public float CD = 0;
     static public Vector2 CloudPos;
     static public bool Spawned;
@@ -49,7 +48,7 @@ public class Movement : MonoBehaviour
             Touch touch = Input.GetTouch(0);
             inputPos = Camera.main.ScreenToWorldPoint(touch.position);
 
-            // Проверка, находится ли указатель касания над элементом UI
+            // If click over UI
             if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
             {
                 PointerEventData pointerData = new PointerEventData(EventSystem.current)
@@ -67,8 +66,7 @@ public class Movement : MonoBehaviour
                     {
                         //Debug.Log("Pointer over UI element: " + result.gameObject.name);
                         needToDrop = false;
-                        debugText.text = debugText.text + " /touchOverUI/ ";
-                        return; // Пропуск логики ввода, если указатель над UI
+                        return; 
                     }
                 }
             }
@@ -82,8 +80,6 @@ public class Movement : MonoBehaviour
             else if (touch.phase == TouchPhase.Ended)
             {
                 needToDrop = true;
-                debugText.text = debugText.text + " /" + needToDrop + "/ ";
-
             }
         }
         else // Check for mouse input

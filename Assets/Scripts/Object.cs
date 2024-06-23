@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Object : MonoBehaviour
 {
-    // Start is called before the first frame update
     public int id = 0;
     private bool Using = true;
     public bool CanMerge = true;
@@ -15,14 +14,11 @@ public class Object : MonoBehaviour
       if (transform.position.y < Movement.CloudPos.y)
         {
             Using = false;
-            Debug.Log("Enterred");
             HasEntered = true;
             GetComponent<Rigidbody2D>().gravityScale = 1f; //можно сделать ригид боди в определении переменных чтобы 2 раза не нагружать рам
         }
-        Debug.Log("created");
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Using)
@@ -35,7 +31,6 @@ public class Object : MonoBehaviour
     public void Drop()
     {
         GetComponent<Rigidbody2D>().gravityScale = 1.5f;
-        Debug.Log("dropeed");
         Using = false;
         CanMerge = true;
     }
@@ -73,7 +68,7 @@ public class Object : MonoBehaviour
         }
 
     }
-     //Тригеры для гейм овера
+     //Game over trigger
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Game Over")

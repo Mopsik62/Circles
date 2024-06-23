@@ -91,12 +91,11 @@ public class GameManager : MonoBehaviour
         if (first.GetComponent<Object>().id != 10)
         {
             GameObject createdObject = massive[first.GetComponent<Object>().id + 1];
-            // localeScale.x т.к нужен float, а x=y;
             PlayParticles(spawnpoint, initialProgressColors[first.GetComponent<Object>().id + 1], 20, createdObject.transform.localScale.x);
 
             Instantiate(createdObject, spawnpoint, Quaternion.identity);
 
-            //прогресс
+            //progress
             if (createdObject.GetComponent<Object>().id > playerInfo.Progress)
             {
                 playerInfo.Progress = createdObject.GetComponent<Object>().id;
@@ -168,7 +167,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        // SaveForYandex();
+        SaveForYandex();
 
     }
     public void SaveSomething(string key, float value)
@@ -179,11 +178,11 @@ public class GameManager : MonoBehaviour
     {
         PlayerPrefs.SetString(key, value);
     }
-    /* public void SaveForYandex()
+     public void SaveForYandex()
      {
          string jsonString = JsonUtility.ToJson(playerInfo);
          SaveExtern(jsonString);
-     }*/
+     }
 
     public void Load()
     {

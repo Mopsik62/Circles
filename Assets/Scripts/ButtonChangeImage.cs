@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ButtonChangeImage : MonoBehaviour
 {
-    // Решил вынести в отдельный скрипт ибо техничнее будет.
+    //unused; saved for educational purpose
     public Sprite firstButtonSprite;
     public Sprite secondButtonSprite;
     public Button button;
@@ -21,7 +21,6 @@ public class ButtonChangeImage : MonoBehaviour
     }
     public void ChangeButtonImage()
     {
-        Debug.Log("dsads");
         if (pressed)
         {
             button.image.sprite = firstButtonSprite;
