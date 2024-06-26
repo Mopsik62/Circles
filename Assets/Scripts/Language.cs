@@ -20,27 +20,37 @@ public class Language : MonoBehaviour
     {
         instance = this;
 
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
+       /* if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
+            Debug.Log("WebGLPlayer");
             StartCoroutine(InitializeLanguage());
-        }
+        }*/
     }
-
-    private IEnumerator InitializeLanguage()
+    private void Start()
     {
-        yield return StartCoroutine(WaitForLanguage());
-
-        // Уведомляем всех подписчиков об изменении языка
+        currentLanguage = GetLang();
+        Debug.Log("curret language in Unity = " + currentLanguage);
         OnLanguageChanged?.Invoke();
+
     }
 
-    private IEnumerator WaitForLanguage()
-    {
-        // Ожидание завершения инициализации SDK
-        while (string.IsNullOrEmpty(currentLanguage))
+    /*    private IEnumerator InitializeLanguage()
         {
-            currentLanguage = GetLang();
-            yield return null;
+            yield return StartCoroutine(WaitForLanguage());
+
+            // Уведомляем всех подписчиков об изменении языка
+            OnLanguageChanged?.Invoke();
         }
-    }
+        private IEnumerator WaitForLanguage()
+        {
+            // Ожидание завершения инициализации SDK
+            while (string.IsNullOrEmpty(currentLanguage))
+            {
+                Debug.Log("currentLanguage IsNullOrEmpty");
+                Debug.Log("BEFORE currentLanguage = " + currentLanguage);
+                currentLanguage = GetLang();
+                Debug.Log("AFTER currentLanguage = " + currentLanguage);
+                yield return null;
+            }
+        }*/
 }

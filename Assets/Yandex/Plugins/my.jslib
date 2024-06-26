@@ -42,11 +42,7 @@
     },
 
 
-   GetLang: async function() {
-    try {
-        // Ожидание инициализации YaGames SDK
-        const ysdk = await YaGames.init();
-
+   GetLang: function() {
         // Получение языка из инициализированного SDK
         var lang = ysdk.environment.i18n.lang;
         console.log(lang);
@@ -56,10 +52,6 @@
         var buffer = _malloc(bufferSize);
         stringToUTF8(lang, buffer, bufferSize);
         return buffer;
-    } catch (err) {
-        console.error("Ошибка при инициализации SDK или получении языка: ", err);
-        return null;
-      }
    },
    
     LoadExtern: async function() {
