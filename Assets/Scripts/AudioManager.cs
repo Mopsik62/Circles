@@ -13,29 +13,38 @@ public class AudioManager : MonoBehaviour
     public AudioClip mergeSound;
     public AudioClip musicSound;
 
+    void Awake()
+    {
+        instance = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
-        instance = this;
+        //instance = this;
         musicSource.clip = musicSound;
         musicSource.Play();
+        Debug.Log("started play music from Unity");
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
     public void playSound(AudioClip audioClip)
     {
         SFXSource.clip = audioClip;
         SFXSource.Play();
     }
 
-    /*public void setMute()
+    public void setMute()
     {
-        if (SFXSource.volume == 0f)
-        { SFXSource.volume = 1f; }
-        else { SFXSource.volume = 0; }
-    }*/
+        musicSource.volume = 0f;
+        SFXSource.volume = 0f;
+        //if (musicSource.volume == 0f)
+        //{ musicSource.volume = 1f; }
+        //else { musicSource.volume = 0f; }
+    }
+    public void setUnmute ()
+    {
+        musicSource.volume = 1f;
+        SFXSource.volume = 1f;
+
+    }
 }

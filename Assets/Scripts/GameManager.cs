@@ -93,15 +93,25 @@ public class GameManager : MonoBehaviour
             GameObject createdObject = massive[first.GetComponent<Object>().id + 1];
             PlayParticles(spawnpoint, initialProgressColors[first.GetComponent<Object>().id + 1], 20, createdObject.transform.localScale.x);
 
-            Instantiate(createdObject, spawnpoint, Quaternion.identity);
+            GameObject createdBall;
+
+            createdBall = Instantiate(createdObject, spawnpoint, Quaternion.identity);
+            //Debug.Log("Started");
+            createdBall.GetComponent<Object>().setMerge();
+            //Debug.Log("1");
+
+            createdBall.GetComponent<Object>().setEntered();
+            //Debug.Log("2");
+
+            createdBall.GetComponent<Object>().setGravity();
+           // Debug.Log("3");
+
 
             //progress
             if (createdObject.GetComponent<Object>().id > playerInfo.Progress)
             {
                 playerInfo.Progress = createdObject.GetComponent<Object>().id;
                 SaveSomething("Progress", playerInfo.Progress);
-                Debug.Log(playerInfo.Progress);
-                Debug.Log(gameProgressBar[playerInfo.Progress].GetComponent<SpriteRenderer>().color + "  and    " + initialProgressColors[playerInfo.Progress]);
                 gameProgressBar[playerInfo.Progress].GetComponent<SpriteRenderer>().color = initialProgressColors[playerInfo.Progress];
                 PlayParticles(gameProgressBar[playerInfo.Progress].transform.position, initialProgressColors[playerInfo.Progress], 100, createdObject.transform.localScale.x);
             }
@@ -109,6 +119,7 @@ public class GameManager : MonoBehaviour
         else
         {
             Debug.Log("YOU WIN");
+            Score(250);
         }
         //рассчёт очков
         Score(++first.GetComponent<Object>().id);
@@ -124,7 +135,7 @@ public class GameManager : MonoBehaviour
             playerInfo.HighScore = scoreInt;
             highScoreText.text = getStringBeforeColon(highScoreText.text) + " " + playerInfo.HighScore.ToString();
             SaveSomething("HighScore", playerInfo.HighScore);
-            SetToLeaderboard(playerInfo.HighScore);
+            //SetToLeaderboard(playerInfo.HighScore);
         }
     }
 
@@ -153,7 +164,7 @@ public class GameManager : MonoBehaviour
     public void SaveSomething(string key, int value)
     {
         PlayerPrefs.SetInt(key, value);
-        Debug.Log(key + " " + value);
+       // Debug.Log(key + " " + value);
         switch (key)
         {
             case "HighScore":
@@ -167,7 +178,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        SaveForYandex();
+        //SaveForYandex();
 
     }
     public void SaveSomething(string key, float value)
@@ -212,7 +223,6 @@ public class GameManager : MonoBehaviour
     {
 
         highScoreText.text = getStringBeforeColon(highScoreText.text) + " " + playerInfo.HighScore.ToString();
-        Debug.Log(highScoreText.text);
         scoreText.text = getStringBeforeColon(scoreText.text) + " " + scoreInt.ToString();
 
         if (playerInfo.Progress < 1)

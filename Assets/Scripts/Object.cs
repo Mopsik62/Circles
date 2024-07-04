@@ -5,40 +5,64 @@ using UnityEngine;
 public class Object : MonoBehaviour
 {
     public int id = 0;
-    private bool Using = true;
-    public bool CanMerge = true;
+    private bool Using = false;
+    public bool CanMerge = false;
     public bool HasEntered = false;
     private float timer = 0f;
     void Start()
     {
-      if (transform.position.y < Movement.CloudPos.y)
+        //Debug.Log("Checking");
+
+        if (transform.position.y < Movement.CloudPos.y)
         {
-            Using = false;
+            CanMerge = true;
             HasEntered = true;
-            GetComponent<Rigidbody2D>().gravityScale = 1f; //можно сделать ригид боди в определении переменных чтобы 2 раза не нагружать рам
+            GetComponent<Rigidbody2D>().gravityScale = 1f;
         }
+     // else {
+            //Debug.Log(this.gameObject.transform.position.y + this.gameObject.name + Movement.CloudPos.y) ;
+           //  }
     }
 
     void Update()
     {
+        //if (CanMerge)
+        //{ Debug.Log(this.gameObject.name); }
         if (Using)
         {
-            CanMerge = false;
             GetComponent<Transform>().position = Movement.CloudPos;
         }
  
     }
     public void Drop()
     {
+        GetComponent<CircleCollider2D>().enabled = true;
         GetComponent<Rigidbody2D>().gravityScale = 1.5f;
         Using = false;
         CanMerge = true;
+    }
+    public void setUsing()
+    {
+        Using = true;
+        GetComponent<CircleCollider2D>().enabled = false;
+    }
+    public void setMerge()
+    {
+        HasEntered = true;
+    }
+    public void setEntered()
+    {
+        CanMerge = true;
+    }
+    public void setGravity()
+    {
+        GetComponent<Rigidbody2D>().gravityScale = 1f;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
         
-        if ((collision.gameObject.tag != "Cloud")&&(HasEntered == false))
+        if ((collision.gameObject.tag != "Cloud")&&(HasEntered == false) && CanMerge)
         {
             HasEntered = true;
             Movement.Spawned = false; 
@@ -68,6 +92,8 @@ public class Object : MonoBehaviour
         }
 
     }
+   
+
      //Game over trigger
     private void OnTriggerStay2D(Collider2D collision)
     {

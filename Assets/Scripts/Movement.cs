@@ -10,17 +10,18 @@ using TMPro;
 public class Movement : MonoBehaviour
 {
 
-    public Vector2 spawnPoint;
     static public float CD = 0;
     static public Vector2 CloudPos;
     static public bool Spawned;
     GameObject holdedBall;
 
 
-
+    private void Awake()
+    {
+        CloudPos = transform.position;
+    }
     void Start()
     {
-        spawnPoint = transform.position;
         Spawned = true;
         CreateNext();
     }
@@ -136,7 +137,9 @@ public class Movement : MonoBehaviour
     }
     void CreateNext()
     {
-        holdedBall = Instantiate(GameManager.instance.massive[Random.Range(0, 2)], transform.position, Quaternion.identity);
+            holdedBall = Instantiate(GameManager.instance.massive[Random.Range(0, 2)], transform.position, Quaternion.identity);
+            holdedBall.GetComponent<Object>().setUsing();
+
     }
     static void CreateById()
     {

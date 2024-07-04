@@ -78,8 +78,12 @@
       ysdk.adv.showFullscreenAdv({
     callbacks: {
         onClose: function(wasShown) {
-          console.log("===============closed===============================");
+            MyGameInstance.SendMessage('AudioManager', 'setUnmute');
           // Действие после закрытия рекламы.
+        },
+        onOpen: function(){
+          MyGameInstance.SendMessage('AudioManager', 'setMute');
+
         },
         onError: function(error) {
           // Действие в случае ошибки.
