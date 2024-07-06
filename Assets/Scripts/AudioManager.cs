@@ -16,14 +16,13 @@ public class AudioManager : MonoBehaviour
     void Awake()
     {
         instance = this;
+        musicSource.clip = musicSound;
+        musicSource.Play();
     }
     // Start is called before the first frame update
     void Start()
     {
         //instance = this;
-        musicSource.clip = musicSound;
-        musicSource.Play();
-        Debug.Log("started play music from Unity");
     }
 
 
@@ -35,6 +34,7 @@ public class AudioManager : MonoBehaviour
 
     public void setMute()
     {
+        Debug.Log("SetMute");
         musicSource.volume = 0f;
         SFXSource.volume = 0f;
         //if (musicSource.volume == 0f)
@@ -43,8 +43,11 @@ public class AudioManager : MonoBehaviour
     }
     public void setUnmute ()
     {
+        Debug.Log("SetUnmute");
         musicSource.volume = 1f;
         SFXSource.volume = 1f;
+        musicSource.Play();
+
 
     }
 }

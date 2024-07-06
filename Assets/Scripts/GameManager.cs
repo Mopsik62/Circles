@@ -135,7 +135,7 @@ public class GameManager : MonoBehaviour
             playerInfo.HighScore = scoreInt;
             highScoreText.text = getStringBeforeColon(highScoreText.text) + " " + playerInfo.HighScore.ToString();
             SaveSomething("HighScore", playerInfo.HighScore);
-            //SetToLeaderboard(playerInfo.HighScore);
+            SetToLeaderboard(playerInfo.HighScore);
         }
     }
 
@@ -178,7 +178,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        //SaveForYandex();
+        SaveForYandex();
 
     }
     public void SaveSomething(string key, float value)
