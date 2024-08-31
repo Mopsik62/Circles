@@ -165,5 +165,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 8
-  CanMerge: 1
+  Using: 0
+  CanMerge: 0
   HasEntered: 0

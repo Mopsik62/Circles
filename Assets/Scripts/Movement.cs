@@ -22,7 +22,6 @@ public class Movement : MonoBehaviour
     }
     void Start()
     {
-        Spawned = true;
         CreateNext();
     }
 
@@ -37,12 +36,6 @@ public class Movement : MonoBehaviour
 
         bool needToDrop = false;
         Vector3 inputPos = Input.mousePosition;
-
-        if (!Spawned)
-        {
-            CreateNext();
-            Spawned = true;
-        }
 
         if (Input.touchCount > 0)
         {
@@ -128,21 +121,29 @@ public class Movement : MonoBehaviour
 
         CloudPos = transform.position;
 
-        if (needToDrop)
+        if (needToDrop && Spawned)
         {
-            holdedBall.GetComponent<Object>().Drop();
+           // Debug.Log("try to get holded ball using bool");
+            if (holdedBall.GetComponent<Object>().Using)
+            {
+               // Debug.Log("Prepare for dropping ball");
+                holdedBall.GetComponent<Object>().Drop();
+               // Debug.Log("After dropping ball");
+            }
+
         }
 
-        
-    }
-    void CreateNext()
-    {
-            holdedBall = Instantiate(GameManager.instance.massive[Random.Range(0, 2)], transform.position, Quaternion.identity);
-            holdedBall.GetComponent<Object>().setUsing();
 
     }
-    static void CreateById()
+    public void CreateNext()
     {
+       // Debug.Log("HoldedBall prepare for created");
+
+        holdedBall = Instantiate(GameManager.instance.massive[Random.Range(0, 2)], transform.position, Quaternion.identity);
+        Spawned = true;
+       // Debug.Log("Spawned = true");
+       // Debug.Log("HoldedBall created");
+            holdedBall.GetComponent<Object>().setUsing();
 
     }
 

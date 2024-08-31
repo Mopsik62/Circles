@@ -8,6 +8,7 @@ TagManager:
   - Cloud
   - Game Over
   - BackGround
+  - Box
   layers:
   - Default
   - TransparentFX

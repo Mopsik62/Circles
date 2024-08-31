@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int scoreInt = 0;
 
     [SerializeField] private Image gameOverPanel;
+    [SerializeField] private GameObject advPanel;
     [SerializeField] private Image pauseMenu;
 
     [SerializeField] private float fadeTime = 1.5f;
@@ -48,6 +49,10 @@ public class GameManager : MonoBehaviour
 
     [DllImport("__Internal")]
     private static extern void ShowAdv();
+    [DllImport("__Internal")]
+    private static extern void GameplayStop();
+    [DllImport("__Internal")]
+    private static extern void GameplayStart();
 
     [DllImport("__Internal")]
     private static extern void LoadExtern();
@@ -148,6 +153,9 @@ public class GameManager : MonoBehaviour
     //Pause
     public void Pause()
     {
+        if (isPaused)
+            return;
+        GameplayStop();
         pauseMenu.gameObject.SetActive(true);
         isPaused = true;
         Time.timeScale = 0;
@@ -155,6 +163,7 @@ public class GameManager : MonoBehaviour
 
     public void Resume()
     {
+        GameplayStart();
         ignoreOneFrame = true;
         pauseMenu.gameObject.SetActive(false);
         isPaused = false;
@@ -246,6 +255,7 @@ public class GameManager : MonoBehaviour
             //Debug.Log(gameProgressBar[i].GetComponent<SpriteRenderer>().color);
 
         }
+        GameplayStart();
     }
 
     public void PlayParticles(Vector2 spawnpoint, Color? color = null, short? count = null, float? size = null)
@@ -289,10 +299,19 @@ public class GameManager : MonoBehaviour
         Application.Quit();
     }
 
+    public void RestartGame()
+    {
+        Time.timeScale = 1;
+        isPaused = false;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 
 
     IEnumerator ResetGame()
     {
+        GameplayStop();
+        Time.timeScale = 0;
+        isPaused = true;
         Color startColor = gameOverPanel.color;
         startColor.a = 0f;
         float elapsedTime = 0f;
@@ -300,7 +319,7 @@ public class GameManager : MonoBehaviour
 
         while (elapsedTime < fadeTime)
         {
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime;
 
             float newAlpha = Mathf.Lerp(0f, 1f, (elapsedTime / fadeTime));
             startColor.a = newAlpha;
@@ -308,9 +327,18 @@ public class GameManager : MonoBehaviour
 
             yield return null;
         }
+
+       advPanel.gameObject.SetActive(true);
+       /* TextMeshProUGUI textComponent = advPanel.GetComponentInChildren<TextMeshProUGUI>();
+
+        for (int i = 3; i > 0; i--)
+        {
+            textComponent.text = i.ToString();
+            yield return new WaitForSecondsRealtime(1f);
+        }*/
+
         //yield return new WaitForSeconds(2.5f);
         //
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
 }

@@ -34,13 +34,39 @@
 
     },
 
-    SetToLeaderboard: function(value){
-      ysdk.getLeaderboards()
-      .then(lb => {
-        lb.SetLeaderboardScore('HighScore', value)
-      });
+    SetToLeaderboard: function(value) {
+  ysdk.isAvailableMethod('leaderboards.setLeaderboardScore')
+    .then(isAvailable => {
+      if (isAvailable) {
+        ysdk.getLeaderboards()
+          .then(lb => {
+            lb.setLeaderboardScore('HighScore', value);
+          })
+          .catch(err => {
+            console.error('Ошибка получения leaderboards:', err);
+          });
+      } else {
+        console.warn('Метод setLeaderboardScore недоступен для пользователя.');
+      }
+    })
+    .catch(err => {
+      console.error('Ошибка проверки доступности метода:', err);
+    });
     },
 
+
+    GameplayStart: function() {
+        if (ysdk.features && ysdk.features.GameplayAPI) {
+    ysdk.features.GameplayAPI.start();
+    }
+   },
+
+   GameplayStop: function() {
+        if (ysdk.features && ysdk.features.GameplayAPI) {
+    ysdk.features.GameplayAPI.stop();
+    }
+   },
+   
 
    GetLang: function() {
         // Получение языка из инициализированного SDK
@@ -66,8 +92,16 @@
             console.log(myJSON);
             MyGameInstance.SendMessage('GameManager', 'LoadFromYandex', myJSON);
             console.log("PlayerData was loaded");
+            if (ysdk.features && ysdk.features.LoadingAPI) {
+    ysdk.features.LoadingAPI.ready();
+}
+
         } else {
             console.error('Player not initialized');
+            if (ysdk.features && ysdk.features.LoadingAPI) {
+    ysdk.features.LoadingAPI.ready();
+}
+
         }
     } catch (err) {
         console.error('Error loading player data:', err);
@@ -78,10 +112,13 @@
       ysdk.adv.showFullscreenAdv({
     callbacks: {
         onClose: function(wasShown) {
-            MyGameInstance.SendMessage('AudioManager', 'setUnmute');
+          this.GameplayStart();
+          MyGameInstance.SendMessage('AudioManager', 'setUnmute');
+
           // Действие после закрытия рекламы.
         },
         onOpen: function(){
+          this.GameplayStop();
           MyGameInstance.SendMessage('AudioManager', 'setMute');
 
         },

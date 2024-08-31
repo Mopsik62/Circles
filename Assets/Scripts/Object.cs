@@ -5,7 +5,7 @@ using UnityEngine;
 public class Object : MonoBehaviour
 {
     public int id = 0;
-    private bool Using = false;
+    public bool Using = false;
     public bool CanMerge = false;
     public bool HasEntered = false;
     private float timer = 0f;
@@ -36,6 +36,7 @@ public class Object : MonoBehaviour
     }
     public void Drop()
     {
+        Movement.Spawned = false;
         GetComponent<CircleCollider2D>().enabled = true;
         GetComponent<Rigidbody2D>().gravityScale = 1.5f;
         Using = false;
@@ -61,11 +62,25 @@ public class Object : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        
-        if ((collision.gameObject.tag != "Cloud")&&(HasEntered == false) && CanMerge)
+        if ((collision.gameObject.tag == "Object") && ((HasEntered == false) || (collision.gameObject.GetComponent<Object>().HasEntered == false)) && CanMerge)
         {
+            if (HasEntered == false )
+            {
+                HasEntered = true;
+                FindFirstObjectByType<Movement>().CreateNext();
+            } else if (collision.gameObject.GetComponent<Object>().HasEntered == false)
+            {
+                collision.gameObject.GetComponent<Object>().HasEntered = true;
+                FindFirstObjectByType<Movement>().CreateNext();
+            }
+
+        }
+        else if ((collision.gameObject.tag == "Box")&&(HasEntered == false) && CanMerge)
+        {
+            Debug.Log("Before create next");
             HasEntered = true;
-            Movement.Spawned = false; 
+            FindFirstObjectByType<Movement>().CreateNext();
+            Debug.Log("Create next");
         }
 
         if (collision.gameObject.tag == gameObject.tag )
