@@ -29,7 +29,7 @@ public class Language : MonoBehaviour
     private void Start()
     {
         currentLanguage = GetLang();
-        Debug.Log("curret language in Unity = " + currentLanguage);
+        //Debug.Log("curret language in Unity = " + currentLanguage);
         OnLanguageChanged?.Invoke();
 
     }

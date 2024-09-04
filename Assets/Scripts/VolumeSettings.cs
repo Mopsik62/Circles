@@ -27,7 +27,7 @@ public class VolumeSettings : MonoBehaviour
     public void SetMusicVolume()
     {
         float volume = musicSlider.value;
-        Debug.Log("Music volume = " + volume);
+        //Debug.Log("Music volume = " + volume);
         myMixer.SetFloat("music", Mathf.Log10(volume)*20);
         GameManager.instance.SaveSomething("musicVolume", volume);
     }

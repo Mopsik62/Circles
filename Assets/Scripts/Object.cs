@@ -38,7 +38,7 @@ public class Object : MonoBehaviour
     {
         Movement.Spawned = false;
         GetComponent<CircleCollider2D>().enabled = true;
-        GetComponent<Rigidbody2D>().gravityScale = 1.5f;
+        GetComponent<Rigidbody2D>().gravityScale = 2.0f;
         Using = false;
         CanMerge = true;
     }

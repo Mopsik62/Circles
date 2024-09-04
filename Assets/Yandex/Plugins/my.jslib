@@ -20,15 +20,11 @@
 
     },
 
-    Hello: function (value) {
-      console.log("Hello function = " + value);
-    },
-
     SaveExtern: function (date) {
       var dateString = UTF8ToString(date);
       var myobj = JSON.parse(dateString);
       player.setData(myobj);
-      console.log("myobj");
+      //console.log("myobj");
       console.log(myobj);
       console.log("PlayerData was saved");
 
@@ -88,7 +84,7 @@
         if (player) {
             const _data = await player.getData();
             const myJSON = JSON.stringify(_data);
-            console.log("myJSON");
+            //console.log("myJSON");
             console.log(myJSON);
             MyGameInstance.SendMessage('GameManager', 'LoadFromYandex', myJSON);
             console.log("PlayerData was loaded");
@@ -113,17 +109,22 @@
     callbacks: {
         onClose: function(wasShown) {
           this.GameplayStart();
+          console.log("onClose");
           MyGameInstance.SendMessage('AudioManager', 'setUnmute');
 
           // Действие после закрытия рекламы.
         },
         onOpen: function(){
           this.GameplayStop();
+          console.log("onOpen");
+
           MyGameInstance.SendMessage('AudioManager', 'setMute');
 
         },
         onError: function(error) {
           // Действие в случае ошибки.
+          console.log("onError");
+
         }
     }
 })

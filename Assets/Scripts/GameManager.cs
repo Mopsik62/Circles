@@ -45,9 +45,6 @@ public class GameManager : MonoBehaviour
     private static extern void SaveExtern(string date);
 
     [DllImport("__Internal")]
-    private static extern void Hello(string value);
-
-    [DllImport("__Internal")]
     private static extern void ShowAdv();
     [DllImport("__Internal")]
     private static extern void GameplayStop();
@@ -67,9 +64,11 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        ShowAdv();
-        Debug.Log("Start LoadExtern From Unity");
         LoadExtern();
+        Debug.Log("Start LoadExtern From Unity");
+
+        ShowAdv();
+        Debug.Log("Start ShowAdv From Unity");
         pauseMenu.gameObject.SetActive(false);
 
         //Load();
