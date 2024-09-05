@@ -1,6 +1,6 @@
 # Key points
 
-### Version 1 
+### Version 1 https://yandex.ru/games/app/339276?lang=ru
 
 ![ezgif-3-9ae8accfeb](https://github.com/Mopsik62/Circles/assets/74981499/20443802-403b-49af-944c-4e4e2dfffe77)
 
